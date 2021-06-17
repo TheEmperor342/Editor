@@ -131,6 +131,58 @@ QPushButton:pressed{
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="zoomOutBtn">
+            <property name="minimumSize">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="Resources.qrc">
+              <normaloff>:/Icons/img/icons/cil-zoom-out.png</normaloff>:/Icons/img/icons/cil-zoom-out.png</iconset>
+            </property>
+            <property name="shortcut">
+             <string>Ctrl+-</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="zoomInBtn">
+            <property name="minimumSize">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="Resources.qrc">
+              <normaloff>:/Icons/img/icons/cil-zoom-in.png</normaloff>:/Icons/img/icons/cil-zoom-in.png</iconset>
+            </property>
+            <property name="shortcut">
+             <string>Ctrl+=</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="runFileBtn">
             <property name="minimumSize">
              <size>
@@ -467,5 +519,38 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal
  <resources>
   <include location="Resources.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>zoomInBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>textEdit</receiver>
+   <slot>zoomIn()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>559</x>
+     <y>23</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>317</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>zoomOutBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>textEdit</receiver>
+   <slot>zoomOut()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>528</x>
+     <y>23</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>317</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

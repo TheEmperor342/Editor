@@ -1,6 +1,6 @@
 from modules.ui_main import Ui_MainWindow
 from modules.imports import *
-from os import system
+from os import system, path
 
 
 class MainWindow(QMainWindow):
@@ -53,8 +53,13 @@ class MainWindow(QMainWindow):
     # /////////////////////////////////////////////////
 
     def runFile(self) -> None:
-        path = self.FILE_DATA["Path"]
-        if path is not None and path.endswith(".py"): system(f'start python "{path}"')
+        pathh = self.FILE_DATA["Path"]
+        if pathh is not None and pathh.endswith(".py"):
+            with open(f"temp/{path.basename(pathh)[:-3]}_run.py", 'w') as f:
+                with open(pathh) as file2:
+                    f.write(file2.read())
+                    f.write("\n\n\ninput('Press ENTER to Exit')")
+                system(f'start python "temp/{path.basename(pathh)[:-3]}_run.py"')
         else:
             self.msg.setWindowTitle("Warning")
             self.msg.setIcon(QMessageBox.Information)
