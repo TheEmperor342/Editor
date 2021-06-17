@@ -4,6 +4,6 @@ An Editor Made With Python
 - Can make, save, edit and open files
 
 ### REQUIREMENTS:
-- PySide2 == 5.15.5
+- PySide2 == 5.15.2
 ___
 [ᴛʜᴇ ᴇᴍᴘᴇʀᴏʀ]
