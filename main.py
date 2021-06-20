@@ -1,6 +1,6 @@
 from modules.ui_main import Ui_MainWindow
 from modules.imports import *
-from os import system, path
+from os import startfile, path, getcwd, mkdir
 
 
 class MainWindow(QMainWindow):
@@ -46,6 +46,7 @@ class MainWindow(QMainWindow):
         self.msg = QMessageBox()
         self.APP_STATE = False
         self.FILE_DATA = {"Path": None}
+        self.CW = getcwd()
 
         # /////////////////////////////////////////////////
 
@@ -54,12 +55,16 @@ class MainWindow(QMainWindow):
 
     def runFile(self) -> None:
         pathh = self.FILE_DATA["Path"]
+        fileCWD = '/'.join(pathh.split('/')[:-1])
         if pathh is not None and pathh.endswith(".py"):
-            with open(f"temp/{path.basename(pathh)[:-3]}_run.py", 'w') as f:
-                with open(pathh) as file2:
-                    f.write(file2.read())
-                    f.write("\n\n\ninput('Press ENTER to Exit')")
-                system(f'start python "temp/{path.basename(pathh)[:-3]}_run.py"')
+            try:
+                with open(f"{fileCWD}/.editor/run.bat", 'w') as f:
+                    f.write(f'@echo off\n\ncd "{fileCWD}"\n\npython "{path.basename(pathh)}"\n\npause')
+            except FileNotFoundError:
+                mkdir(f"{fileCWD}/.editor")
+                with open(f"{fileCWD}/.editor/run.bat", 'w') as f:
+                    f.write(f'@echo off\n\ncd "{fileCWD}"\n\npython "{path.basename(pathh)}"\n\npause')
+            startfile(f'"{fileCWD}/.editor/run.bat"')
         else:
             self.msg.setWindowTitle("Warning")
             self.msg.setIcon(QMessageBox.Information)
