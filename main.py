@@ -1,6 +1,7 @@
 from modules.ui_main import Ui_MainWindow
 from modules.imports import *
 from os import startfile, path, getcwd, mkdir
+import platform
 
 
 class MainWindow(QMainWindow):
@@ -14,15 +15,23 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
 
         # /////////////////////////////////////////////////
+        
+        self.platform = platform.system()
 
         # ==> REMOVING TITLE BAR
         # /////////////////////////////////////////////////
+         
+        if not self.platform == "Windows":
+            self.setAttribute(Qt.WA_TranslucentBackground)
+            self.setWindowFlag(Qt.FramelessWindowHint)
 
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setWindowFlag(Qt.FramelessWindowHint)
-
-        self.ui.titleBar.mouseMoveEvent = self.moveWindow
-        self.ui.topBar.mouseMoveEvent = self.moveWindow
+            self.ui.titleBar.mouseMoveEvent = self.moveWindow
+            self.ui.topBar.mouseMoveEvent = self.moveWindow
+        else:
+            self.ui.titleBar.close()
+            self.ui.closeBtn.close()
+            self.ui.maxBtn.close()
+            self.ui.minimizeBtn.close()
 
         # /////////////////////////////////////////////////
 
@@ -55,16 +64,25 @@ class MainWindow(QMainWindow):
 
     def runFile(self) -> None:
         pathh = self.FILE_DATA["Path"]
-        fileCWD = '/'.join(pathh.split('/')[:-1])
         if pathh is not None and pathh.endswith(".py"):
-            try:
+            fileCWD = '/'.join(pathh.split('/')[:-1])
+            
+            if not self.platform == "Windows":
                 with open(f"{fileCWD}/.editor/run.bat", 'w') as f:
                     f.write(f'@echo off\n\ncd "{fileCWD}"\n\npython "{path.basename(pathh)}"\n\npause')
-            except FileNotFoundError:
-                mkdir(f"{fileCWD}/.editor")
-                with open(f"{fileCWD}/.editor/run.bat", 'w') as f:
-                    f.write(f'@echo off\n\ncd "{fileCWD}"\n\npython "{path.basename(pathh)}"\n\npause')
-            startfile(f'"{fileCWD}/.editor/run.bat"')
+                startfile(f'"{fileCWD}/.editor/run.bat"')
+            else:
+                with open(f"{fileCWD}/.editor/run.sh", 'w') as f:
+                    f.write(
+                        "function pause(){\n"
+                        "\tread -s -n 1 -p \"Press any key to continue . . .\"\n"
+                        "\texit\n"
+                        "}\n"
+                        f"cd \"{fileCWD}\"\n"
+                        f"python \"{path.basename(pathh)}\"\n"
+                        "pause"
+                    )
+                startfile(f'"{fileCWD}/.editor/run.sh"')
         else:
             self.msg.setWindowTitle("Warning")
             self.msg.setIcon(QMessageBox.Information)
