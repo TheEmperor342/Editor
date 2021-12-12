@@ -1,6 +1,10 @@
 from modules.ui_main import Ui_MainWindow
 from modules.imports import *
-from os import startfile, path, getcwd, mkdir
+from os import path, getcwd, mkdir
+try:
+    from os import startfile
+except ImportError:
+    from subprocess import call
 import platform
 
 
@@ -21,7 +25,7 @@ class MainWindow(QMainWindow):
         # ==> REMOVING TITLE BAR
         # /////////////////////////////////////////////////
          
-        if not self.platform == "Windows":
+        if self.platform == "Windows":
             self.setAttribute(Qt.WA_TranslucentBackground)
             self.setWindowFlag(Qt.FramelessWindowHint)
 
@@ -67,22 +71,23 @@ class MainWindow(QMainWindow):
         if pathh is not None and pathh.endswith(".py"):
             fileCWD = '/'.join(pathh.split('/')[:-1])
             
-            if not self.platform == "Windows":
+            if self.platform == "Windows":
                 with open(f"{fileCWD}/.editor/run.bat", 'w') as f:
                     f.write(f'@echo off\n\ncd "{fileCWD}"\n\npython "{path.basename(pathh)}"\n\npause')
                 startfile(f'"{fileCWD}/.editor/run.bat"')
             else:
                 with open(f"{fileCWD}/.editor/run.sh", 'w') as f:
                     f.write(
-                        "function pause(){\n"
-                        "\tread -s -n 1 -p \"Press any key to continue . . .\"\n"
+                        "pause(){\n"
+                        "\tread -n 1 -p \"Press any key to continue . . .\"\n"
                         "\texit\n"
                         "}\n"
                         f"cd \"{fileCWD}\"\n"
                         f"python \"{path.basename(pathh)}\"\n"
                         "pause"
                     )
-                startfile(f'"{fileCWD}/.editor/run.sh"')
+                print(f"{fileCWD}/.editor/run.sh")
+                call([ 'sh', f'{fileCWD}/.editor/run.sh' ])
         else:
             self.msg.setWindowTitle("Warning")
             self.msg.setIcon(QMessageBox.Information)
